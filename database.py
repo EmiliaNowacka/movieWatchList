@@ -18,15 +18,26 @@ connection = sqlite3.connect("data.db")
 
 
 def create_tables():
-    pass
+    with connection:
+        connection.execute(CREATE_MOVIES_TABLE)
 
 
 def add_movie(title, release_timestamp):
-    pass
+    with connection:
+        connection.execute(INSERT_MOVIES, (title, release_timestamp))
 
 
 def get_movies(upcoming=False):
-    pass
+    with connection:
+        cursor = connection.cursor()
+        if upcoming:
+            today_timestamp = datetime.datetime.today().timestamp()
+            cursor.execute(
+                SELECT_UPCOMING_MOVIES, (today_timestamp,)
+            )  # comma at the end cause it has to be a tuple!!
+        else:
+            cursor.execute(SELECT_ALL_MOVIES)
+        return cursor.fetchall()
 
 
 def watch_movie(title):
@@ -34,4 +45,7 @@ def watch_movie(title):
 
 
 def get_watched_movies():
-    pass
+    with connection:
+        cursor = connection.cursor()
+        cursor.execute(SELECT_WATCHED_MOVIES)
+        return cursor.fetchall()
