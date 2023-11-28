@@ -82,12 +82,10 @@ def check_user_exists(username):
             print("user exists\n")
             return True
         except sqlite3.OperationalError:
-            print("ERRORRRR")
             return False
 
 
 def watch_movie(username, movie_title):
-    print("IN THE FUN WATCH MOVIE")
     user_exists = check_user_exists(username)
     if user_exists:
         try:
