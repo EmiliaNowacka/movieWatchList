@@ -31,7 +31,7 @@ UPDATE_MOVIE_AS_WATCHED = "UPDATE movies SET watched = 1 WHERE title = ?;"
 INSERT_WATCHED_MOVIE = "INSERT INTO watched (user_username, movie_id) VALUES (?,  ?);"
 SET_MOVIE_WATCHED = "UPDATE movies SET watched = 1 WHERE title = ?;"
 GET_MOVIE_ID = "SELECT id FROM movies WHERE EXISTS title = ?;"
-CHECK_IF_USER_EXISTS = "SELECT id FROM users WHERE EXISTS username = ?;"
+CHECK_IF_USER_EXISTS = "SELECT username FROM users WHERE username = ?;"
 
 
 connection = sqlite3.connect("data.db")
@@ -46,7 +46,10 @@ def create_tables():
 
 def add_user(username):
     with connection:
-        connection.execute(INSERT_USER, (username,))
+        try:
+            connection.execute(INSERT_USER, (username,))
+        except sqlite3.IntegrityError:
+            print("user already exists")
 
 
 def add_movie(title, release_timestamp):
@@ -76,18 +79,22 @@ def check_user_exists(username):
     with connection:
         try:
             connection.execute(CHECK_IF_USER_EXISTS, (username,)).fetchone()
+            print("user exists\n")
             return True
         except sqlite3.OperationalError:
+            print("ERRORRRR")
             return False
 
 
 def watch_movie(username, movie_title):
-    if check_user_exists(username):
+    print("IN THE FUN WATCH MOVIE")
+    user_exists = check_user_exists(username)
+    if user_exists:
         try:
             movie_id = get_movie_id_by_title(movie_title)
         except sqlite3.OperationalError:
             print("Movie not yet in database, please add the movie first\n")
-            return 0
+            return
         movie_id = movie_id[0]
         with connection:
             connection.execute(INSERT_WATCHED_MOVIE, (username, movie_id))
