@@ -1,6 +1,9 @@
 import datetime
 import sqlite3
 
+
+CREATE_TITLE_INDEX = """CREATE UNIQUE INDEX IF NOT EXISTS idx_movies ON movies(title);"""
+
 CREATE_MOVIES_TABLE = """CREATE TABLE IF NOT EXISTS movies (
     id INTEGER PRIMARY KEY,
     title TEXT, 
@@ -42,6 +45,7 @@ def create_tables():
         connection.execute(CREATE_MOVIES_TABLE)
         connection.execute(CREATE_USERS_TABLE)
         connection.execute(CREATE_WATCHED_TABLE)
+        connection.execute(CREATE_TITLE_INDEX)
 
 
 def add_user(username):
