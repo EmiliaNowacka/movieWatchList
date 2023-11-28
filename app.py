@@ -33,26 +33,19 @@ def prompt_add_user():
     add_user(_username)
 
 
-def print_movie_list(movies, heading="All"):
+def print_movie_list(_movies, heading="All"):
     print(f"---- {heading} movies ----")
-    for _id, title, release_date in movies:
+    for _id, title, release_date in _movies:
         movie_date = datetime.datetime.fromtimestamp(release_date)
         readable_date = movie_date.strftime("%b %d %Y")
         print(f"{_id}: {title} (on {readable_date})")
     print("---------------\n")
 
 
-def print_watched_movie_list(username, movies):
-    print(f"--- {username}'s watched movies: ---- \n")
-    for movie in movies:
-        print(f"{movie[1]}\n")
-    print('------------------------------\n')
-
-
 def prompt_watch_movie():
     movie_id = input("Enter movie you've watched \n")
     _username = input("Your username: \n")
-    database.watch_movie(_username, movie_id)
+    watch_movie(_username, movie_id)
 
 
 while (user_input := input(menu)) != "7":
@@ -69,7 +62,10 @@ while (user_input := input(menu)) != "7":
     elif user_input == "5":
         username = input("Your username: \n")
         movies = get_watched_movies(username)
-        print_watched_movie_list(username, movies)
+        if movies:
+            print_movie_list(movies, f"{username}'s watched")
+        else:
+            print("No movies watched yet")
     elif user_input == "6":
         prompt_add_user()
     else:
