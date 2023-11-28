@@ -11,7 +11,8 @@ menu = """
             4 Watch a movie
             5 View watched movies
             6 Add user
-            7 EXIT
+            7 Search for title
+            8 EXIT
 """
 welcome = "Welcome to the watchlist app"
 
@@ -24,8 +25,7 @@ def prompt_add_movie():
     release_date = input("Release date (dd-mm-yyyy): \n")
     parsed_date = datetime.datetime.strptime(release_date, "%d-%m-%Y")
     timestamp = parsed_date.timestamp()
-
-    database.add_movie(title, timestamp)
+    add_movie(title, timestamp)
 
 
 def prompt_add_user():
@@ -48,7 +48,15 @@ def prompt_watch_movie():
     watch_movie(_username, movie_id)
 
 
-while (user_input := input(menu)) != "7":
+def prompt_search_movies():
+    title = input("Search for:")
+    _movies = search_movies(title)
+    if _movies:
+        for movie in _movies:
+            print(movie[1])
+
+
+while (user_input := input(menu)) != "8":
     if user_input == "1":
         prompt_add_movie()
     elif user_input == "2":
@@ -68,5 +76,7 @@ while (user_input := input(menu)) != "7":
             print("No movies watched yet")
     elif user_input == "6":
         prompt_add_user()
+    elif user_input == "7":
+        prompt_search_movies()
     else:
         print("ERROR: Invalid input, try again")
